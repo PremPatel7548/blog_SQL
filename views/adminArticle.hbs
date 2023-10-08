@@ -170,11 +170,11 @@
             </td>
             {{!-- <td> <img src="/uploads/{{image}}" width="150px"> </td> --}}
             <td>
-              {{category_id.name}}
+              {{categoryName}}
             </td>
-            <td> <a class="btn btn-outline-primary" href="/showArticle/{{_id}}"><i class="fa fa-eye"
+            <td> <a class="btn btn-outline-primary" href="/showArticle/{{articleID}}"><i class="fa fa-eye"
                   aria-hidden="true"></i></a> </td>
-            <td> <a class="btn btn-outline-danger" href="/deleteArticle/{{_id}}"> Delete </a> </td>
+            <td> <a class="btn btn-outline-danger" href="/deleteArticle/{{articleID}}"> Delete </a> </td>
           </tr>
           {{/articles}}
         </tbody>

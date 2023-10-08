@@ -31,5 +31,7 @@ router.post('/Category',adminVarify,adminController.addCategory);
 router.get('/deleteCategory/:id',adminVarify,adminController.deleteCategory);
 router.get('/editCategory/:id',adminVarify,adminController.viewEdit);
 router.post('/editCategory/:id',adminVarify,adminController.editCategory);
+router.get('/article',adminVarify,adminController.viewArticle);
+router.get('/deleteArticle/:id',adminVarify,adminController.deleteArticle);
 
 module.exports = router;
