@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {{>links}}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .article {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .article img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        .article-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .article-author {
+            font-size: 16px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .article-description {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .article-month-year {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .article-category {
+            font-size: 16px;
+            color: #007bff;
+        }
+
+        .input-row {
+            display: inline-block;
+            margin-right: 10px;
+            /* Add margin for spacing between input rows */
+        }
+
+        /* Lightbox Styles */
+        #imageLightbox {
+            display: none;
+            position: fixed;
+            margin-left: 350px;
+            margin-top: 150px;
+            top: 0;
+            left: 0;
+            width: 52.5%;
+            height: 55%;
+            background-color: rgba(0, 0, 0, 0.7);
+            text-align: center;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        #lightboxImage {
+            max-width: 90%;
+            max-height: 90%;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #ffffff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: rgb(223, 49, 14);
+            ;
+        }
+
+        .editable-input {
+            width: 100% !important;
+        }
+    </style>
+</head>
+
+<body>
+    {{>header}}
+
+    {{>adminAside}}
+    <div class="container">
+        <h1>Article Data</h1>
+        {{!-- {{ArticalID}} --}}
+        {{#articleData}}
+        <div class="article">
+            <form action="/editArticle/{{_id}}" method="post">
+                {{!-- <div class="article-title">Title: {{title}} &nbsp;&nbsp;<i id="editTitle"
+                        class="fa fa-edit btn btn-sm btn-outline-primary" aria-hidden="true"></i></div>
+                <div class="article-description">Description: {{description}}&nbsp;&nbsp;<i id="editDescription"
+                        class="fa fa-edit btn btn-sm btn-outline-primary" aria-hidden="true"></i></div>
+                <div class="article-image"> --}}
+                    <div class="article-title col-md-10">
+                        Title:
+                        <span class="editable-content"> {{title}}</span>
+                        <input class="editable-input form-control" type="text" name="title" value="{{title}}"
+                            style="display: none;">
+                        <i class="fa fa-edit btn btn-sm btn-outline-primary" aria-hidden="true"></i>
+                    </div>
+                    <div class="article-description">
+                        Description:
+                        <span class="editable-content">{{description}}</span>
+                        <input class="editable-input form-control" type="text" name="description"
+                            value="{{description}}" style="display: none;">
+                        <i class="fa fa-edit btn btn-sm btn-outline-primary" aria-hidden="true"></i>
+                    </div>
+
+                    <div class="article-description">
+                        Category:
+                        <span class="article-category editable-content">
+                            <span id="selectedCategoryName">{{category_id.name}}</span>
+                        </span>
+                        {{!-- <input class="editable-input form-control" type="text" name="description"
+                            value="{{description}}" style="display: none;"> --}}
+                        {{/articleData}}
+                        <select name="category" class="editable-input form-control" style="display: none;"
+                            id="categorySelect">
+                            {{#categorys}}
+                            <option value="{{name}}">{{name}}</option>
+                            {{/categorys}}
+                        </select>
+                        <i class="fa fa-edit btn btn-sm btn-outline-primary" aria-hidden="true"></i>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary">Edit Article</button>
+            </form>
+            {{#articleData}}
+            <div class="article-image">
+                {{!-- {{ArticalID}} --}}
+                {{#image}}
+                <!-- Lightbox Container -->
+                <div id="imageLightbox" class="hidden">
+                    <span id="closeLightbox" class="close">&times;</span>
+                    <img id="lightboxImage" src="" alt="Image">
+                    <br><br><br>
+                </div>
+
+                <img src="/uploads/{{this}}" height="50px" width="50px">{{this}}
+                <!-- Include the image ID as a data attribute -->
+                <a class="btn btn-outline-primary" href="/deleteArticleImage/{{this}}">
+                    <i class="fa-sharp fa-solid fa-minus" aria-hidden="true"></i>
+                </a><br>
+                {{!-- <a href="/deleteArticleImage/{{this}}">Delete</a> --}}
+                {{/image}}
+            </div><br>
+            <form action="/uploadImage/{{_id}}" method="post" enctype="multipart/form-data">
+                <center>
+                    <div id="imageUploadContainer">
+                        {{!-- <div class="input-row">
+                            <input type="file" name="image[]" id="image" aria-describedby="helpId" placeholder=""
+                                accept="image/*">
+                            <button type="button" class="btn btn-danger" onclick="removeImageUpload(this)">-</button>
+                        </div> --}}
+                    </div>
+                </center>
+                <button type="button" class="btn btn-primary" onclick="addImageUpload()">+</button>
+                <button type="submit" class="btn btn-success">Save Images</button>
+            </form>
+
+
+            <div class="article-month-year">Month and Year: {{monthAndYear}}</div>
+        </div>
+        {{/articleData}}
+            <a href="/article" ="goBackButton" class="btn btn-primary"
+                style="position: fixed; top: 80px; right: 500px; z-index: 9999;">Go
+                Back</a>
+    </div>
+    <!-- ... Your HTML code ... -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const categorySelect = document.getElementById('categorySelect');
+            const categoryName = document.getElementById('selectedCategoryName');
+
+            const previousCategory = categoryName.textContent.trim();
+
+            categorySelect.addEventListener('change', function () {
+                const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+                categoryName.textContent = selectedOption.textContent;
+            });
+            categorySelect.value = previousCategory;
+        });
+
+        //////////////////////////////////////////////////////////////////////////
+        function toggleEdit(element) {
+            const content = element.parentElement.querySelector('.editable-content');
+            const input = element.parentElement.querySelector('.editable-input');
+
+            content.style.display = 'none';
+            input.style.display = 'block';
+
+            input.value = content.textContent.trim();
+            input.focus();
+
+            // When Enter key is pressed or input field loses focus, update content and toggle back
+            input.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    content.textContent = input.value;
+                    content.style.display = 'block';
+                    input.style.display = 'none';
+                }
+            });
+
+            input.addEventListener('blur', function () {
+                content.textContent = input.value;
+                content.style.display = 'block';
+                input.style.display = 'none';
+            });
+        }
+
+        // Add click event listeners to all edit buttons
+        const editButtons = document.querySelectorAll('.fa-edit');
+        editButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                toggleEdit(button);
+            });
+        });
+
+        //////////////////////////////////////////////////////////
+        let uploadCount = 1;
+
+        function addImageUpload() {
+            const container = document.getElementById('imageUploadContainer');
+
+            // Create input element
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.className = 'input-row';
+            input.name = 'image[]';
+            input.accept = 'image/*';
+            input.classList.add('dynamic-input');
+
+            // Create remove button element
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'btn btn-danger';
+            removeButton.textContent = '-';
+            removeButton.onclick = function () {
+                removeImageUpload(this);
+            };
+
+            // Create a line break element
+            const lineBreak = document.createElement('br');
+
+            // Append input, button, and line break to the container
+            container.appendChild(input);
+            container.appendChild(removeButton);
+            container.appendChild(lineBreak);
+
+            uploadCount++;
+        }
+
+        function removeImageUpload(button) {
+            const container = document.getElementById('imageUploadContainer');
+            const input = button.previousElementSibling; // Get the input element
+
+            // Find the line break element and remove it
+            let lineBreak = input.nextElementSibling;
+            while (lineBreak && lineBreak.tagName !== 'BR') {
+                lineBreak = lineBreak.nextElementSibling;
+            }
+
+            if (lineBreak) {
+                container.removeChild(lineBreak);
+            }
+
+            // Remove the input and button elements from the DOM
+            container.removeChild(input);
+            container.removeChild(button);
+
+            uploadCount--;
+        }
+
+    </script>
+
+    <script>
+        // Function to show the lightbox with the clicked image
+        function showLightbox(imageSrc) {
+            const lightbox = document.getElementById('imageLightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+
+            // Set the image source for the lightbox
+            lightboxImage.setAttribute('src', imageSrc);
+
+            // Show the lightbox
+            lightbox.style.display = 'block';
+
+            // Close the lightbox when clicking on the close button
+            const closeButton = document.getElementById('closeLightbox');
+            closeButton.addEventListener('click', function () {
+                lightbox.style.display = 'none';
+            });
+
+            // Close the lightbox when clicking outside the image
+            lightbox.addEventListener('click', function (event) {
+                if (event.target === lightbox) {
+                    lightbox.style.display = 'none';
+                }
+            });
+        }
+
+        // Add click event listeners to all images
+        const articleImages = document.querySelectorAll('.article-image img');
+        articleImages.forEach(function (image) {
+            image.addEventListener('click', function () {
+                // Get the image source from the clicked image
+                const imageSrc = image.getAttribute('src');
+
+                // Show the lightbox with the clicked image
+                showLightbox(imageSrc);
+            });
+        });
+
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('btn-outline-primary')) {
+                // Get the image ID from the data-imageid attribute
+                const imageId = event.target.getAttribute('data-imageid');
+
+                // Now you can use the imageId as needed, such as for deletion
+                console.log('Image ID:', imageId);
+            }
+        });
+    </script>
+</body>
+
+</html>

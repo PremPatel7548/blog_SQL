@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	{{>links}}
+	<style>
+		/* Add your custom CSS styling here */
+		body {
+			font-family: Arial, sans-serif;
+		}
+
+		.container {
+			max-width: 800px;
+			position: absolute;
+			margin-left: 380px;
+		}
+
+		h1 {
+			margin-top: 20px;
+			text-align: center;
+		}
+
+		.card {
+			margin: 10px 0;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			padding: 15px;
+		}
+
+		.card-title {
+			font-size: 24px;
+			margin: 0;
+			padding: 0;
+		}
+
+		.card-author {
+			font-size: 14px;
+			color: #555;
+			margin: 5px 0;
+		}
+
+		.card-description {
+			margin: 10px 0;
+		}
+
+		.card-image {
+			max-width: 100%;
+			height: auto;
+			margin-top: 10px;
+			border-radius: 5px;
+		}
+
+		.card-category {
+			font-weight: bold;
+			color: #007bff;
+		}
+
+		body {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: Arial, Helvetica, sans-serif;
+			text-transform: capitalize;
+		}
+
+		aside {
+			height: 100vh;
+			width: 275px;
+			position: absolute;
+			right: 0;
+			padding: 20px;
+			margin-top: 20px;
+			background-color: #ddd;
+		}
+
+		aside h4 {
+			position: relative;
+			display: inline;
+			margin-bottom: 25px;
+			font-size: 20px;
+		}
+
+		aside h4:hover{
+			font-size: 25px;
+		}
+
+		aside h4::after {
+			content: "";
+			position: absolute;
+			width: 50%;
+			height: 1px;
+			background-color: #437EEB;
+			left: 110%;
+			top: 50%;
+		}
+
+		aside .category {
+			list-style: none;
+			padding: 0;
+			margin: 25px 0;
+		}
+
+
+		aside .category li {
+			margin-bottom: 15px;
+			padding-bottom: 10px;
+			font-size: 16px;
+			color: plum;
+			border-bottom: 1px solid #eee;
+			position: relative;
+		}
+
+		aside .category li:hover{
+			background-color: lavender;
+			font-size: 20px;
+		}
+		aside .category li:last-child {
+			border-bottom: none;
+		}
+
+		aside .category li::after {
+			content: attr(data-number);
+			position: absolute;
+			width: 25px;
+			height: 20px;
+			background-color: #eee;
+			right: 0;
+			border-radius: 4px;
+			text-align: center;
+			line-height: 1.5;
+			color: #000;
+			font-size: 12px;
+		}
+
+		aside .gallery {
+			display: grid;
+			grid-template-rows: repeat(2, 90px);
+			grid-template-columns: repeat(3, 100px);
+			gap: 5px;
+			margin: 25px 0;
+		}
+
+		aside .gallery img {
+			width: 90px;
+			height: 80px;
+			object-fit: cover;
+		}
+
+		aside .archive {
+			list-style: none;
+			padding: 0;
+		}
+
+		aside .archive li {
+			font-size: 12px;
+			color: #777;
+			margin-bottom: 15px;
+			position: relative;
+			padding-left: 20px;
+			font-weight: bold;
+		}
+
+		aside .archive li::before {
+			font-family: "FontAwesome";
+			content: "\f07b";
+			position: absolute;
+			left: 0;
+			top: 2px;
+			font-size: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	{{>header}}
+
+	<div class="container">
+		<h1>Articles</h1>
+		{{#if checkSearchArtical}}
+		{{#searchArtical}}
+		<div class="card">
+			<h2 class="card-title">{{title}}</h2>
+			<p class="card-description">{{lookup ../categoryDes @index}}</p>
+			<img class="card-image" src="/uploads/{{image}}" alt="{{title}}" />
+			<p>Category: <span class="card-category">{{category_id.name}}</span></p>
+			<p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p>
+		</div>
+		{{/searchArtical}}
+		{{#if remessage}}
+		{{#recentPost}}
+			<div class="card">
+			<h2 class="card-title">{{title}}</h2>
+			<p class="card-description">{{lookup ../recentPostDes @index}}</p>
+			<img class="card-image" src="/uploads/{{image}}" alt="{{title}}" />
+			<p>Category: <span class="card-category">{{category_id.name}}</span></p>
+			<p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p>
+			</div>
+		{{/recentPost}}
+		{{/if}}
+		{{#if checkSearchArtical}}
+		{{#showArchives}}
+			<div class="card">
+			<h2 class="card-title">{{title}}</h2>
+			<p class="card-description">{{lookup ../archiveDes @index}}</p>
+			<img class="card-image" src="/uploads/{{image}}" alt="{{title}}" />
+			<p>Category: <span class="card-category">{{category_id.name}}</span></p>
+			<p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p>
+			</div>
+		{{/showArchives}}
+		{{/if}}
+		{{else}}
+		{{#if checkArtical}}
+		{{#if detail}}
+		{{#each DetailData}}
+			<div class="card">
+			<a href="/home_artical/{{_id}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
+			<p class="card-description">{{description}}</p>
+			<img class="card-image" src="/uploads/{{image}}" alt="{{title}}" />
+			<p>Category: <span class="card-category">{{category_id.name}}</span></p>
+			<p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p>
+		</div>
+		{{/each}}
+		{{else}}
+		{{#each articles}}
+		<div class="card">
+			<a href="/home_artical/{{_id}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
+			<p class="card-description">{{lookup ../truncatedDescriptions @index}}</p>
+			<img class="card-image" src="/uploads/{{image}}" alt="{{title}}" />
+			<p>Category: <span class="card-category">{{category_id.name}}</span></p>
+			<p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p>
+		</div>
+		{{/each}}
+		{{/if}}
+		{{/if}}
+		{{/if}}
+	</div>
+
+	<aside>
+		<h4>category list</h4>
+		<ul class="category">
+			{{#if checkSearchArtical}}
+			{{#searchCategory}}
+			<li><a href="/searchArticals/{{_id}}" class="fa fa-home">{{name}}</a></li>
+			{{/searchCategory}}
+			{{else}}
+			{{#if checkArtical}}
+			{{#category}}
+			<li><a href="/searchArticals/{{_id}}" class="fa fa-home">{{name}}</a></li>
+			{{/category}}
+			{{/if}}
+			{{/if}}
+		</ul>
+		<h4>Recent Post</h4>
+		<ul class="category">
+			{{#if checkSearchArtical}}
+			{{#leatestArtical}}
+			<li><a href="/searchArticals/{{_id}}" class="fa fa-home">{{title}}</a></li>
+			{{/leatestArtical}}
+			{{else}}
+			{{#if checkArtical}}
+			{{#leArtical}}
+			<li><a href="/searchArticals/{{_id}}" class="fa fa-home">{{title}}</a></li>
+			{{/leArtical}}
+			{{/if}}
+			{{/if}}
+		</ul>
+		<h4>ARCHIVES</h4>
+		<ul class="category">
+			{{#if checkSearchArtical}}
+			{{#archives}}
+			<li><a href="/searchArticals?id={{_id}}" class="fa fa-home">{{_id}} ({{count}})</a></li>
+			{{/archives}}
+			{{else}}
+			{{#if checkArtical}}
+			{{#showArchives}}
+			<li><a href="/searchArticals?id={{_id}}" class="fa fa-home">{{_id}} ({{count}})</a></li>
+			{{/showArchives}}
+			{{/if}}
+			{{/if}}
+		</ul>
+
+		<div class="gallery">
+		</div>
+	</aside>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

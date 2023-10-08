@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  {{>links}}
+  <style>
+    html,
+    body {
+      overflow: hidden;
+    }
+
+    /* Style for pagination container */
+    .pagination-container {
+      margin-top: 20px;
+      text-align: center;
+      position: fixed;
+      bottom: 20px;
+      /* Adjust as needed */
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 1;
+    }
+
+    /* Style for pagination buttons */
+    .pagination {
+      display: inline-block;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .page-item {
+      display: inline-block;
+      margin: 0 5px;
+    }
+
+    .page-link {
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      color: #333;
+      text-decoration: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .page-link:hover {
+      background-color: #337ab7;
+      color: #fff;
+      border-color: #337ab7;
+    }
+
+    .page-link.bg-warning {
+      background-color: #f0ad4e;
+      color: #fff;
+      border-color: #eea236;
+    }
+
+    .page-link.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      background-color: #ddd;
+      border-color: #ccc;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+  {{>header}}
+
+  {{>adminAside}}
+  <div class="content">
+
+
+    {{#if success}}
+    <div class="alert alert-success alert-dismissible successAlert" role="alert">
+      <button type="button" class="close" data-dismiss="alert">
+        <i class="fa fa-times"></i>
+      </button>
+      <strong>Success !</strong>{{success}}
+    </div>
+    {{/if}}
+
+    <button class="btn btn-outline-primary" style="margin-left:130px;margin-top:50px" data-toggle="modal"
+      data-target="#addArticle">Add new</button>
+    <!-- Modal -->
+    <div class="modal fade" id="addArticle" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Article</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="/addArticle" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+              <div class="form-group">
+                <label for=""> Title :- </label>
+                <input type="text" class="form-control" name="title" id="title" aria-describedby="helpId"
+                  placeholder="">
+              </div>
+              <div class="form-group">
+                <label for=""> Description :- </label>
+                <input type="text" class="form-control" name="desc" id="desc" aria-describedby="helpId" placeholder="">
+              </div>
+              <div class="form-group">
+                <label for=""> Image :- </label>
+                <div id="imageUploadContainer">
+                  <input type="file" class="form-control" name="image[]" id="image" aria-describedby="helpId"
+                    placeholder="" accept="image/*">
+                </div>
+              </div>
+              {{!-- <button type="button" onclick="addImageUpload()">+</button>
+              <button type="button" onclick="removeImageUpload()">-</button><br><br> --}}
+              <div class="form-group">
+                <label for=""> Category :- </label>
+                <select name="category_id" class="form-control">
+                  {{#categorys}}
+                  <option value="{{_id}}">{{name}}</option>
+                  {{/categorys}}
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-left:200px">
+      <form action="/article" method="get" style="margin-left:20%">
+        <input type="text" style="width: 200px;border:1px solid black" name="search" id="search" value="{{search}}">
+        <button type="submit" class="btn btn-success">Search</button>
+      </form>
+      <a href="/article" style="margin-left: 10px;margin-top: 7px;"><button class="btn btn-primary">All
+          Data</button></a>
+    </div>
+    <br><br>
+
+    <center>
+      <table class="table col-md-10" id="tblData">
+        <thead>
+          <tr>
+            <th> Title </th>
+            <th> Description </th>
+            <th>
+              <center>Image</center>
+            </th>
+            <th> Category </th>
+            <th>
+              <center>Action</center>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#articles}}
+          <tr>
+            <td> {{title}} </td>
+            <td> {{description}} </td>
+            <td>
+              {{#if image.length}}
+              <img src="/uploads/{{image.[0]}}" style="max-width: 150px;">
+              {{/if}}
+            </td>
+            {{!-- <td> <img src="/uploads/{{image}}" width="150px"> </td> --}}
+            <td>
+              {{category_id.name}}
+            </td>
+            <td> <a class="btn btn-outline-primary" href="/showArticle/{{_id}}"><i class="fa fa-eye"
+                  aria-hidden="true"></i></a> </td>
+            <td> <a class="btn btn-outline-danger" href="/deleteArticle/{{_id}}"> Delete </a> </td>
+          </tr>
+          {{/articles}}
+        </tbody>
+      </table>
+      {{>pagination}}
+      <br>
+    </center>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script>
+      let uploadCount = 1;
+
+      function addImageUpload() {
+        const container = document.getElementById('imageUploadContainer');
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.name = 'image[]'; // Use the updated field name "profile[]"
+        input.accept = 'image/*';
+        input.classList.add('dynamic-input');
+        container.appendChild(input);
+        uploadCount++;
+      }
+
+      function removeImageUpload() {
+        const container = document.getElementById('imageUploadContainer');
+        if (uploadCount > 1) {
+          const lastInput = container.querySelector('.dynamic-input:last-child');
+          container.removeChild(lastInput);
+          uploadCount--;
+        }
+      }
+    </script>
+    <script>
+      // Get the current page number from the URL query parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentPage = parseInt(urlParams.get('page')) || 1;
+
+      // Call the updatePaginationLinks function with the current page
+      updatePaginationLinks(currentPage, 5); // Replace 5 with the total number of pages
+    </script>
+
+    <!-- ... Previous code ... -->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Function to update pagination links
+        const updatePaginationLinks = (currentPage, totalPages) => {
+          const paginationContainer = document.querySelector(".pagination-container");
+          const prevButton = document.querySelector("#prev-button");
+          const nextButton = document.querySelector("#next-button");
+
+          // Clear previous pagination links
+          paginationContainer.innerHTML = "";
+
+          // Create and add Previous button
+          const prevPage = currentPage - 1;
+          prevButton.href = `?page=${prevPage}&limit=3`;
+          prevButton.classList.toggle("disabled", currentPage === 1);
+          paginationContainer.appendChild(prevButton.parentNode.cloneNode(true));
+
+          // Calculate the range of page numbers to display (e.g., 1, 2, 3, 4, 5)
+          const displayRange = 5;
+          const halfRange = Math.floor(displayRange / 2);
+          let startPage = Math.max(1, currentPage - halfRange);
+          const endPage = Math.min(totalPages, startPage + displayRange - 1);
+
+          // Create and add dynamic page buttons
+          for (let page = startPage; page <= endPage; page++) {
+            const pageButton = document.createElement("li");
+            pageButton.classList.add("page-item");
+            const pageLink = document.createElement("a");
+            pageLink.classList.add("page-link", `page-${page}`);
+            pageLink.href = `?page=${page}&limit=3`;
+            pageLink.textContent = page;
+            if (currentPage === page) {
+              pageLink.classList.add("bg-warning"); // Highlight current page
+            }
+            pageButton.appendChild(pageLink);
+            paginationContainer.appendChild(pageButton);
+          }
+
+          // Enable or disable Next button based on current page
+          const nextPage = currentPage + 1;
+          nextButton.href = `?page=${nextPage}&limit=3`;
+          nextButton.classList.toggle("disabled", currentPage === totalPages);
+          paginationContainer.appendChild(nextButton.parentNode.cloneNode(true));
+        };
+
+        // Get the current page number from the URL query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentPage = parseInt(urlParams.get("page")) || 1;
+
+        // Define the total number of pages (replace with your actual value)
+        const totalRecord = {{ totalRecords }};
+        const recordPerPage = 3;
+        const totalPageCount = Math.ceil(totalRecord / recordPerPage); // Use Math.ceil to ensure correct page count
+
+        // Update the pagination links
+        updatePaginationLinks(currentPage, totalPageCount);
+      });
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"></script>
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'
+      integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM'
+      crossorigin='anonymous'></script>
+    <script src="../public/js/script.js"></script>
+</body>
+
+</html>
