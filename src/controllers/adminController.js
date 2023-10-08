@@ -29,20 +29,27 @@ const showCategory = (req, res) => {
             console.error(err);
             return res.status(500).send('Internal server error');
           }
-          // Count total records
-          const totalRecords = result.length;
-  
-          // Calculate total pages
-          const totalPages = Math.ceil(totalRecords / limit);
-  
-        //   res.send(result);
-          res.render('adminCategory', {
-            categorys: result,
-            search: search,
-            totalRecords: totalRecords,
-            currentPage: page,
-            totalPages: totalPages,
+          
+          Categorys.getAll((err,data)=>{
+            if(err)
+            {
+                console.log(err);
+            }
+            const totalRecords = data.length;
+    
+            // Calculate total pages
+            const totalPages = Math.ceil(totalRecords / limit);
+
+            res.render('adminCategory', {
+              categorys: result,
+              search: search,
+              totalRecords: totalRecords,
+              currentPage: page,
+              totalPages: totalPages,
+            });
           });
+          // Count total records
+        //   res.send(result);
         }
       );
     } catch (err) {
