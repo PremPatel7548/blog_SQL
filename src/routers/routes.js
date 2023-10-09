@@ -2,6 +2,21 @@ const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 const session = require('express-session');
+const multer = require('multer');
+const path = require('path');
+
+var storage = multer.diskStorage({
+    destination:function(req,file,res){
+        res(null,"../blog_SQL/public/uploads");
+    },
+    filename:function(req,file,res){
+        res(null,Date.now()+path.extname(file.originalname));
+    }
+});
+
+var upload = multer({
+    storage:storage
+});
 
 const adminVarify = (req,res,next)=>{
     if(session.username != "admin@gmail.com")
@@ -32,6 +47,7 @@ router.get('/deleteCategory/:id',adminVarify,adminController.deleteCategory);
 router.get('/editCategory/:id',adminVarify,adminController.viewEdit);
 router.post('/editCategory/:id',adminVarify,adminController.editCategory);
 router.get('/article',adminVarify,adminController.viewArticle);
+router.post('/addArticle',adminVarify,upload.single('image'),adminController.addArticle);
 router.get('/deleteArticle/:id',adminVarify,adminController.deleteArticle);
 
 module.exports = router;

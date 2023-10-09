@@ -109,7 +109,7 @@
               <div class="form-group">
                 <label for=""> Image :- </label>
                 <div id="imageUploadContainer">
-                  <input type="file" class="form-control" name="image[]" id="image" aria-describedby="helpId"
+                  <input type="file" class="form-control" name="image" id="image" aria-describedby="helpId"
                     placeholder="" accept="image/*">
                 </div>
               </div>
@@ -119,7 +119,7 @@
                 <label for=""> Category :- </label>
                 <select name="category_id" class="form-control">
                   {{#categorys}}
-                  <option value="{{_id}}">{{name}}</option>
+                  <option value="{{categoryID}}">{{categoryName}}</option>
                   {{/categorys}}
                 </select>
               </div>
@@ -164,9 +164,7 @@
             <td> {{title}} </td>
             <td> {{description}} </td>
             <td>
-              {{#if image.length}}
-              <img src="/uploads/{{image.[0]}}" style="max-width: 150px;">
-              {{/if}}
+              <img src="/uploads/{{articleImage}}" style="max-width: 150px;">
             </td>
             {{!-- <td> <img src="/uploads/{{image}}" width="150px"> </td> --}}
             <td>

@@ -258,7 +258,8 @@ const viewArticle = (req, res) => {
 
                 // Fetch articles with associated categories using a JOIN
                 db.query(
-                    'SELECT articles.*, categorys.categoryName AS categoryName FROM articles ' +
+                    'SELECT articles.*, articleImageTB.image AS articleImage, categorys.categoryName AS categoryName FROM articles ' +
+                    'LEFT JOIN articleImageTB ON articles.articleID = articleImageTB.articleID ' +
                     'LEFT JOIN categorys ON articles.categoryID = categorys.categoryID ' +
                     'WHERE articles.title LIKE ? OR articles.description LIKE ? ' +
                     'LIMIT ? OFFSET ?',
@@ -290,6 +291,69 @@ const viewArticle = (req, res) => {
         res.send(err);
     }
 };
+
+
+const addArticle = async (req, res) => {
+    try {
+        const profileFilenames = [];
+
+        // Iterate through the uploaded files and push their filenames into the array
+        // req.files.forEach(file => {
+        //     profileFilenames.push(file.filename);
+        // });
+
+        const title = req.body.title;
+        const description = req.body.desc;
+        const image = req.file.filename;
+        const category_id = req.body.category_id;
+
+        const currentDate = new Date();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Get current month
+        const year = currentDate.getFullYear().toString(); // Get current year
+
+        // Get the full month name
+        const options = { month: 'long' };
+        const fullMonthName = currentDate.toLocaleString('en-US', options);
+
+        // Set the custom field to "MM/YYYY" format
+        const monthandyear = `${fullMonthName} ${year}`;
+
+        // const a = new Article({
+        //     title: title,
+        //     description: description,
+        //     image: image,
+        //     monthAndYear: monthandyear,
+        //     category_id: category_id
+        // });
+
+        const sql = `
+           insert into Articles(title,description,monthAndYear,timestamp,categoryID) values ('${title}','${description}','${monthandyear}',NOW(),${category_id})`;
+
+        db.query(sql,(err,data)=>{
+            if(err)
+            {
+                console.log(err);
+            }
+
+            const sql2 = `
+             insert into articleImageTB(articleID,image) values(${data.insertId},'${image}')
+            `;
+
+            db.query(sql2,(err)=>{
+                if(err)
+                {
+                    console.log(err);
+                }
+
+                res.redirect('/article');
+
+            })
+        });
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
 
 const deleteArticle = async (req, res) => {
     try {
@@ -332,5 +396,6 @@ module.exports = {
     viewEdit,
     editCategory,
     viewArticle,
+    addArticle,
     deleteArticle
 };
