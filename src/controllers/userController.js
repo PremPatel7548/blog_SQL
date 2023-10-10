@@ -28,8 +28,8 @@ const viewArticle = (req, res) => {
       });
 
       const truncatedDescriptions = des.map(description => {
-          return description.length > 10
-          ? `${description.slice(0, 10)}...`
+          return description.length > 50
+          ? `${description.slice(0, 50)}...`
           : description;
       });
 
@@ -153,8 +153,8 @@ const viewArticle = (req, res) => {
                     });
 
                     recentPostDes = des2.map(description => {
-                        return description.length > 10
-                        ? `${description.slice(0, 10)}...`
+                        return description.length > 50
+                        ? `${description.slice(0, 50)}...`
                         : description;
                     });
                   // });
@@ -192,8 +192,8 @@ const viewArticle = (req, res) => {
                 });
 
                 const categoryDes = des.map(description => {
-                    return description.length > 10
-                    ? `${description.slice(0, 10)}...`
+                    return description.length > 50
+                    ? `${description.slice(0, 50)}...`
                     : description;
                 });
 
@@ -246,8 +246,8 @@ const viewArticle = (req, res) => {
                 });
 
                 const archiveDes = des1.map(description => {
-                    return description.length > 10
-                    ? `${description.slice(0, 10)}...`
+                    return description.length > 50
+                    ? `${description.slice(0, 50)}...`
                     : description;
                 });
 
