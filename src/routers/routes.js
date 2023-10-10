@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
+const userController = require('../controllers/userController');
 const session = require('express-session');
 const multer = require('multer');
 const path = require('path');
@@ -58,5 +59,10 @@ router.get('/deleteArticle/:id',adminVarify,adminController.deleteArticle);
 router.post('/editArticle/:id',adminVarify,adminController.editArticle);
 router.post('/uploadImage/:id',adminVarify,upload.array('image[]',50),adminController.addPicture);
 router.get('/deleteArticleImage/:image',adminVarify,adminController.deleteArticlePicture);
+
+// User Routes
+router.get('/:id?',userController.viewArticle);
+router.get('/contectus',userController.viewContect);
+router.get('/searchArticals/:id?' , userController.showSearchArticle);
 
 module.exports = router;

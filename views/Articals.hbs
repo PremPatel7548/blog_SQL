@@ -180,32 +180,32 @@
 		{{#if checkSearchArtical}}
 		{{#searchArtical}}
 		<div class="card">
-			<h2 class="card-title">{{title}}</h2>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
 			<p class="card-description">{{lookup ../categoryDes @index}}</p>
-			<img class="card-image" src="/uploads/{{image}}" alt="{{title}}" />
-			<p>Category: <span class="card-category">{{category_id.name}}</span></p>
-			<p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p>
+			<img class="card-image" src="/uploads/{{firstImage}}" alt="{{title}}" />
+			<p>Category: <span class="card-category">{{category_name}}</span></p>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p></a>
 		</div>
 		{{/searchArtical}}
 		{{#if remessage}}
 		{{#recentPost}}
 			<div class="card">
-			<h2 class="card-title">{{title}}</h2>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
 			<p class="card-description">{{lookup ../recentPostDes @index}}</p>
-			<img class="card-image" src="/uploads/{{image}}" alt="{{title}}" />
-			<p>Category: <span class="card-category">{{category_id.name}}</span></p>
-			<p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p>
+			<img class="card-image" src="/uploads/{{firstImage}}" alt="{{title}}" />
+			<p>Category: <span class="card-category">{{category_name}}</span></p>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p></a>
 			</div>
 		{{/recentPost}}
 		{{/if}}
 		{{#if checkSearchArtical}}
 		{{#showArchives}}
 			<div class="card">
-			<h2 class="card-title">{{title}}</h2>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
 			<p class="card-description">{{lookup ../archiveDes @index}}</p>
-			<img class="card-image" src="/uploads/{{image}}" alt="{{title}}" />
-			<p>Category: <span class="card-category">{{category_id.name}}</span></p>
-			<p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p>
+			<img class="card-image" src="/uploads/{{firstImage}}" alt="{{title}}" />
+			<p>Category: <span class="card-category">{{category_name}}</span></p>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p></a>
 			</div>
 		{{/showArchives}}
 		{{/if}}
@@ -214,21 +214,21 @@
 		{{#if detail}}
 		{{#each DetailData}}
 			<div class="card">
-			<a href="/home_artical/{{_id}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
+			<h2 class="card-title"><b style="text-decoration: none;color:#000">{{title}}</b></h2>
 			<p class="card-description">{{description}}</p>
-			<img class="card-image" src="/uploads/{{image}}" alt="{{title}}" />
-			<p>Category: <span class="card-category">{{category_id.name}}</span></p>
-			<p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p>
+			<img class="card-image" src="/uploads/{{firstImage}}" alt="{{title}}" />
+			<p>Category: <span class="card-category">{{category_name}}</span></p>
+			<p class="card-description" style="margin-top: -20px;">Posted on <b style="color:#000">{{monthAndYear}}</b></p>
 		</div>
 		{{/each}}
 		{{else}}
 		{{#each articles}}
 		<div class="card">
-			<a href="/home_artical/{{_id}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
 			<p class="card-description">{{lookup ../truncatedDescriptions @index}}</p>
-			<img class="card-image" src="/uploads/{{image}}" alt="{{title}}" />
-			<p>Category: <span class="card-category">{{category_id.name}}</span></p>
-			<p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p>
+			<img class="card-image" src="/uploads/{{firstImage}}" alt="{{title}}" />
+			<p>Category: <span class="card-category">{{category_name}}</span></p>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><p class="card-description" style="margin-top: -20px;">Posted on <b style="cursor: pointer;">{{monthAndYear}}</b></p></a>
 		</div>
 		{{/each}}
 		{{/if}}
@@ -241,12 +241,12 @@
 		<ul class="category">
 			{{#if checkSearchArtical}}
 			{{#searchCategory}}
-			<li><a href="/searchArticals/{{_id}}" class="fa fa-home">{{name}}</a></li>
+			<li><a href="/searchArticals/{{categoryID}}" class="fa fa-home">{{categoryName}}</a></li>
 			{{/searchCategory}}
 			{{else}}
 			{{#if checkArtical}}
 			{{#category}}
-			<li><a href="/searchArticals/{{_id}}" class="fa fa-home">{{name}}</a></li>
+			<li><a href="/searchArticals/{{categoryID}}" class="fa fa-home">{{categoryName}}</a></li>
 			{{/category}}
 			{{/if}}
 			{{/if}}
@@ -255,12 +255,12 @@
 		<ul class="category">
 			{{#if checkSearchArtical}}
 			{{#leatestArtical}}
-			<li><a href="/searchArticals/{{_id}}" class="fa fa-home">{{title}}</a></li>
+			<li><a href="/searchArticals/{{articleID}}" class="fa fa-home">{{title}}</a></li>
 			{{/leatestArtical}}
 			{{else}}
 			{{#if checkArtical}}
 			{{#leArtical}}
-			<li><a href="/searchArticals/{{_id}}" class="fa fa-home">{{title}}</a></li>
+			<li><a href="/searchArticals/{{articleID}}" class="fa fa-home">{{title}}</a></li>
 			{{/leArtical}}
 			{{/if}}
 			{{/if}}
@@ -269,12 +269,12 @@
 		<ul class="category">
 			{{#if checkSearchArtical}}
 			{{#archives}}
-			<li><a href="/searchArticals?id={{_id}}" class="fa fa-home">{{_id}} ({{count}})</a></li>
+			<li><a href="/searchArticals/{{monthAndYear}}" class="fa fa-home">{{monthAndYear}} ({{count}})</a></li>
 			{{/archives}}
 			{{else}}
 			{{#if checkArtical}}
 			{{#showArchives}}
-			<li><a href="/searchArticals?id={{_id}}" class="fa fa-home">{{_id}} ({{count}})</a></li>
+			<li><a href="/searchArticals/{{monthAndYear}}" class="fa fa-home">{{monthAndYear}} ({{count}})</a></li>
 			{{/showArchives}}
 			{{/if}}
 			{{/if}}
