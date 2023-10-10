@@ -85,6 +85,18 @@ const login = async (req, res) => {
     }
 }
 
+const logout = async (req, res) => {
+    try {
+        session.username = "";
+        //session destroy method does not work
+        session.destroy;
+        res.redirect('/adminLogin');
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+
 const addCategory = async (req, res) => {
     try {
         const cname = req.body.cname;
@@ -168,67 +180,8 @@ const editCategory = async (req, res) => {
     }
 }
 
+
 const viewArticle2 = (req, res) => {
-    try {
-        var search = "";
-        if (req.query.search) {
-            search = req.query.search;
-        }
-        let { page, limit } = req.query;
-        if (!page) {
-            page = 1;
-        }
-        if (!limit) {
-            limit = 3;
-        }
-
-        // Count total records
-        db.query(
-            'SELECT COUNT(*) AS totalRecords FROM articles WHERE title LIKE ? OR description LIKE ?',
-            [`%${search}%`, `%${search}%`],
-            (error, results) => {
-                if (error) {
-                    throw error;
-                }
-
-                const totalRecords = results[0].totalRecords;
-                let pageNumber = parseInt(page);
-                let limitNumber = parseInt(limit);
-                const startIndex = (pageNumber - 1) * limitNumber;
-
-                // Fetch articles with pagination
-                db.query(
-                    'SELECT * FROM Articles WHERE title LIKE ? OR description LIKE ? LIMIT ? OFFSET ?',
-                    [`%${search}%`, `%${search}%`, limitNumber, startIndex],
-                    (error, articles) => {
-                        if (error) {
-                            throw error;
-                        }
-
-                        // Fetch categories
-                        db.query('SELECT * FROM Categorys', (error, categorys) => {
-                            if (error) {
-                                throw error;
-                            }
-
-                            res.render('adminArticle', {
-                                categorys: categorys,
-                                articles: articles,
-                                search: search,
-                                totalRecords: totalRecords,
-                            });
-                        });
-                    }
-                );
-            }
-        );
-    } catch (err) {
-        res.send(err);
-    }
-};
-
-
-const viewArticle = (req, res) => {
     try {
         var search = "";
         if (req.query.search) {
@@ -258,8 +211,7 @@ const viewArticle = (req, res) => {
 
                 // Fetch articles with associated categories using a JOIN
                 db.query(
-                    'SELECT articles.*, articleImageTB.image AS articleImage, categorys.categoryName AS categoryName FROM articles ' +
-                    'LEFT JOIN articleImageTB ON articles.articleID = articleImageTB.articleID ' +
+                    'SELECT articles.* categorys.categoryName AS categoryName FROM articles ' +
                     'LEFT JOIN categorys ON articles.categoryID = categorys.categoryID ' +
                     'WHERE articles.title LIKE ? OR articles.description LIKE ? ' +
                     'LIMIT ? OFFSET ?',
@@ -292,15 +244,73 @@ const viewArticle = (req, res) => {
     }
 };
 
+const viewArticle = (req, res) => {
+    try {
+        var search = "";
+        if (req.query.search) {
+            search = req.query.search;
+        }
+        let { page, limit } = req.query;
+        if (!page) {
+            page = 1;
+        }
+        if (!limit) {
+            limit = 3;
+        }
+
+        // Count total records
+        db.query(
+            'SELECT COUNT(*) AS totalRecords FROM articles WHERE title LIKE ? OR description LIKE ?',
+            [`%${search}%`, `%${search}%`],
+            (error, results) => {
+                if (error) {
+                    throw error;
+                }
+
+                const totalRecords = results[0].totalRecords;
+                let pageNumber = parseInt(page);
+                let limitNumber = parseInt(limit);
+                const startIndex = (pageNumber - 1) * limitNumber;
+
+                // Fetch articles with associated categories using a JOIN and first image
+                db.query(
+                    'SELECT articles.*, categorys.categoryName AS categoryName, ' +
+                    '(SELECT image FROM articleImageTB WHERE articleImageTB.articleID = articles.articleID LIMIT 1) AS firstImage ' +
+                    'FROM articles ' +
+                    'LEFT JOIN categorys ON articles.categoryID = categorys.categoryID ' +
+                    'WHERE articles.title LIKE ? OR articles.description LIKE ? ' +
+                    'LIMIT ? OFFSET ?',
+                    [`%${search}%`, `%${search}%`, limitNumber, startIndex],
+                    (error, articles) => {
+                        if (error) {
+                            throw error;
+                        }
+
+                        db.query('SELECT * FROM Categorys', (error, categorys) => {
+                            if (error) {
+                                throw error;
+                            }
+
+                            res.render('adminArticle', {
+                                categorys: categorys,
+                                articles: articles,
+                                search: search,
+                                totalRecords: totalRecords,
+                            });
+                        });
+                    }
+                );
+            }
+        );
+    } catch (err) {
+        res.send(err);
+    }
+};
+
 
 const addArticle = async (req, res) => {
     try {
         const profileFilenames = [];
-
-        // Iterate through the uploaded files and push their filenames into the array
-        // req.files.forEach(file => {
-        //     profileFilenames.push(file.filename);
-        // });
 
         const title = req.body.title;
         const description = req.body.desc;
@@ -318,20 +328,11 @@ const addArticle = async (req, res) => {
         // Set the custom field to "MM/YYYY" format
         const monthandyear = `${fullMonthName} ${year}`;
 
-        // const a = new Article({
-        //     title: title,
-        //     description: description,
-        //     image: image,
-        //     monthAndYear: monthandyear,
-        //     category_id: category_id
-        // });
-
         const sql = `
            insert into Articles(title,description,monthAndYear,timestamp,categoryID) values ('${title}','${description}','${monthandyear}',NOW(),${category_id})`;
 
-        db.query(sql,(err,data)=>{
-            if(err)
-            {
+        db.query(sql, (err, data) => {
+            if (err) {
                 console.log(err);
             }
 
@@ -339,9 +340,8 @@ const addArticle = async (req, res) => {
              insert into articleImageTB(articleID,image) values(${data.insertId},'${image}')
             `;
 
-            db.query(sql2,(err)=>{
-                if(err)
-                {
+            db.query(sql2, (err) => {
+                if (err) {
                     console.log(err);
                 }
 
@@ -358,10 +358,9 @@ const addArticle = async (req, res) => {
 const deleteArticle = async (req, res) => {
     try {
         const id = req.params.id;
-        
-        Articles.delete(id,(err)=>{
-            if(err)
-            {
+
+        Articles.delete(id, (err) => {
+            if (err) {
                 console.log(err);
             }
             res.redirect('/article');
@@ -372,19 +371,123 @@ const deleteArticle = async (req, res) => {
     }
 }
 
-const logout = async (req, res) => {
+const editArticle = async (req,res)=>{
+    try{
+        const _id = req.params.id;
+
+        db.query(`select categoryID from Categorys where categoryName='${req.body.category}'`,(err,result)=>{
+            if(err)
+            {
+                console.log(err);
+            }
+
+            db.query(`update Articles set title='${req.body.title}',description='${req.body.description}',categoryID=${result[0].categoryID} where articleID = ${_id}`,(err)=>{
+                if(err)
+                {
+                    console.log(err);
+                }
+
+                res.redirect(`/showArticle/${_id}`);
+                
+            });
+        });
+    }
+    catch(err)
+    {
+        console.log(err);
+    }
+}
+
+const showArticleData = async (req, res) => {
     try {
-        session.username = "";
-        //session destroy method does not work
-        session.destroy;
-        res.redirect('/adminLogin');
+        const _id = req.params.id;
+
+        db.query(
+            'SELECT articles.*, categorys.categoryName AS categoryName FROM articles ' +
+            'LEFT JOIN categorys ON articles.categoryID = categorys.categoryID ' +
+            'WHERE articles.articleID =' + _id,
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                }
+
+                db.query(`Select * from articleImageTB where articleID = ${_id}`, (err, images) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    db.query('SELECT * FROM Categorys', (err, categorys) => {
+                        if (err) {
+                            console.log(err);
+                        }
+
+                        res.render('adminShowArticle', { articleData: result, images: images, ArticalID: _id, categorys: categorys });
+                    })
+                })
+
+            }
+        )
     }
     catch (err) {
         console.log(err);
     }
 }
 
+const addPicture = async (req, res) => {
+    try {
+        const id = req.params.id;
 
+        db.query(`Select * from articles where articleID = ${id}`, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+
+            if (result == "") {
+                res.send('Article Not found')
+            }
+            else {
+
+                req.files.forEach(file => {
+                    db.query(`Insert into articleImageTB(articleID,image) values(${id},'${file.filename}')`, (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    })
+                });
+
+                res.redirect(`/showArticle/${id}`);
+
+            }
+        })
+
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+const deleteArticlePicture = async (req, res) => {
+    try {
+        const image = req.params.image;
+
+        db.query(`Select articleID from articleImageTB where image='${image}'`,(err,result)=>{
+            if(err)
+            {
+                console.log(err);
+            }
+
+            db.query(`Delete from articleImageTB where image='${image}'`,(err)=>{
+                if(err)
+                {
+                    console.log(err);
+                }
+
+                res.redirect(`/showArticle/${result[0].articleID}`);
+            })
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 module.exports = {
     viewLogin,
@@ -397,5 +500,9 @@ module.exports = {
     editCategory,
     viewArticle,
     addArticle,
-    deleteArticle
+    showArticleData,
+    deleteArticle,
+    editArticle,
+    addPicture,
+    deleteArticlePicture
 };

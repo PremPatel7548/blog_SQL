@@ -127,7 +127,7 @@
         {{!-- {{ArticalID}} --}}
         {{#articleData}}
         <div class="article">
-            <form action="/editArticle/{{_id}}" method="post">
+            <form action="/editArticle/{{articleID}}" method="post">
                 {{!-- <div class="article-title">Title: {{title}} &nbsp;&nbsp;<i id="editTitle"
                         class="fa fa-edit btn btn-sm btn-outline-primary" aria-hidden="true"></i></div>
                 <div class="article-description">Description: {{description}}&nbsp;&nbsp;<i id="editDescription"
@@ -151,7 +151,7 @@
                     <div class="article-description">
                         Category:
                         <span class="article-category editable-content">
-                            <span id="selectedCategoryName">{{category_id.name}}</span>
+                            <span id="selectedCategoryName">{{categoryName}}</span>
                         </span>
                         {{!-- <input class="editable-input form-control" type="text" name="description"
                             value="{{description}}" style="display: none;"> --}}
@@ -159,17 +159,16 @@
                         <select name="category" class="editable-input form-control" style="display: none;"
                             id="categorySelect">
                             {{#categorys}}
-                            <option value="{{name}}">{{name}}</option>
+                            <option value="{{categoryName}}">{{categoryName}}</option>
                             {{/categorys}}
                         </select>
                         <i class="fa fa-edit btn btn-sm btn-outline-primary" aria-hidden="true"></i>
                     </div>
                     <button type="submit" class="btn btn-outline-primary">Edit Article</button>
             </form>
-            {{#articleData}}
             <div class="article-image">
                 {{!-- {{ArticalID}} --}}
-                {{#image}}
+                {{#images}}
                 <!-- Lightbox Container -->
                 <div id="imageLightbox" class="hidden">
                     <span id="closeLightbox" class="close">&times;</span>
@@ -177,15 +176,16 @@
                     <br><br><br>
                 </div>
 
-                <img src="/uploads/{{this}}" height="50px" width="50px">{{this}}
+                <img src="/uploads/{{image}}" height="50px" width="50px">{{image}}
                 <!-- Include the image ID as a data attribute -->
-                <a class="btn btn-outline-primary" href="/deleteArticleImage/{{this}}">
+                <a class="btn btn-outline-primary" href="/deleteArticleImage/{{image}}">
                     <i class="fa-sharp fa-solid fa-minus" aria-hidden="true"></i>
                 </a><br>
                 {{!-- <a href="/deleteArticleImage/{{this}}">Delete</a> --}}
-                {{/image}}
+                {{/images}}
             </div><br>
-            <form action="/uploadImage/{{_id}}" method="post" enctype="multipart/form-data">
+            {{#articleData}}
+            <form action="/uploadImage/{{articleID}}" method="post" enctype="multipart/form-data">
                 <center>
                     <div id="imageUploadContainer">
                         {{!-- <div class="input-row">
