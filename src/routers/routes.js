@@ -40,18 +40,19 @@ const adminLoginVerify = (req,res,next)=>{
     }
 }
 
+//admin-Auth
 router.get('/adminLogin',adminLoginVerify,adminController.viewLogin);
 router.post('/login',adminLoginVerify,adminController.login);
 router.get('/logout',adminController.logout);
 
-//Category
+//Admin Category
 router.get('/Category',adminVarify,adminController.showCategory);
 router.post('/Category',adminVarify,adminController.addCategory);
 router.get('/deleteCategory/:id',adminVarify,adminController.deleteCategory);
 router.get('/editCategory/:id',adminVarify,adminController.viewEdit);
 router.post('/editCategory/:id',adminVarify,adminController.editCategory);
 
-//Article
+//Admin Article
 router.get('/article',adminVarify,adminController.viewArticle);
 router.get('/showArticle/:id',adminVarify,adminController.showArticleData);
 router.post('/addArticle',adminVarify,upload.single('image'),adminController.addArticle);

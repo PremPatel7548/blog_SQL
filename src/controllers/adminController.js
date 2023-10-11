@@ -345,7 +345,7 @@ const addArticle = async (req, res) => {
 
         db.query(sql, (err, data) => {
             if (err) {
-                console.log(err);
+                console.log(err);   
             }
 
             const sql2 = `

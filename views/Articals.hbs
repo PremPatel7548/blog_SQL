@@ -53,14 +53,14 @@
 
 		.card-category {
 			font-weight: bold;
-			color: #007bff;
+			color: #28f584;
 		}
 
 		body {
 			margin: 0;
 			padding: 0;
 			box-sizing: border-box;
-			font-family: Arial, Helvetica, sans-serif;
+			font-family: 'Times New Roman';
 			text-transform: capitalize;
 		}
 
@@ -169,6 +169,11 @@
 			top: 2px;
 			font-size: 10px;
 		}
+
+		#title:hover{
+			color: dodgerblue;
+		}
+		
 	</style>
 </head>
 
@@ -180,7 +185,7 @@
 		{{#if checkSearchArtical}}
 		{{#searchArtical}}
 		<div class="card">
-			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;" id="title">{{title}}</b></h2></a>
 			<p class="card-description">{{lookup ../categoryDes @index}}</p>
 			<img class="card-image" src="/uploads/{{firstImage}}" alt="{{title}}" />
 			<p>Category: <span class="card-category">{{category_name}}</span></p>
@@ -190,7 +195,7 @@
 		{{#if remessage}}
 		{{#recentPost}}
 			<div class="card">
-			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;" id="title">{{title}}</b></h2></a>
 			<p class="card-description">{{lookup ../recentPostDes @index}}</p>
 			<img class="card-image" src="/uploads/{{firstImage}}" alt="{{title}}" />
 			<p>Category: <span class="card-category">{{category_name}}</span></p>
@@ -201,7 +206,7 @@
 		{{#if checkSearchArtical}}
 		{{#showArchives}}
 			<div class="card">
-			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;" id="title">{{title}}</b></h2></a>
 			<p class="card-description">{{lookup ../archiveDes @index}}</p>
 			<img class="card-image" src="/uploads/{{firstImage}}" alt="{{title}}" />
 			<p>Category: <span class="card-category">{{category_name}}</span></p>
@@ -212,19 +217,23 @@
 		{{else}}
 		{{#if checkArtical}}
 		{{#if detail}}
-		{{#each DetailData}}
+		{{#DetailData}}
 			<div class="card">
 			<h2 class="card-title"><b style="text-decoration: none;color:#000">{{title}}</b></h2>
 			<p class="card-description">{{description}}</p>
-			<img class="card-image" src="/uploads/{{firstImage}}" alt="{{title}}" />
+		{{/DetailData}}
+		{{#images}}
+			<img class="card-image" src="/uploads/{{image}}" alt="{{image}}" />
+		{{/images}}
+		{{#DetailData}}
 			<p>Category: <span class="card-category">{{category_name}}</span></p>
 			<p class="card-description" style="margin-top: -20px;">Posted on <b style="color:#000">{{monthAndYear}}</b></p>
 		</div>
-		{{/each}}
+		{{/DetailData}}
 		{{else}}
 		{{#each articles}}
 		<div class="card">
-			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;">{{title}}</b></h2></a>
+			<a href="/{{articleID}}" style="text-decoration: none;color:#000"><h2 class="card-title"><b style="cursor: pointer;" id="title">{{title}}</b></h2></a>
 			<p class="card-description">{{lookup ../truncatedDescriptions @index}}</p>
 			<img class="card-image" src="/uploads/{{firstImage}}" alt="{{title}}" />
 			<p>Category: <span class="card-category">{{category_name}}</span></p>
