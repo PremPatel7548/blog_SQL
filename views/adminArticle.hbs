@@ -162,7 +162,8 @@
           {{#articles}}
           <tr>
             <td> {{title}} </td>
-            <td> {{description}} </td>
+            <td> {{lookup ../articleDes @index}} </td>
+            {{!-- <p class="card-description">{{lookup ../articleDes @index}}</p> --}}
             <td>
               <img src="/uploads/{{firstImage}}" style="max-width: 150px;">
             </td>

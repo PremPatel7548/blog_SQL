@@ -286,6 +286,17 @@ const viewArticle = (req, res) => {
                             throw error;
                         }
 
+                        var des1=[];
+                        articles.forEach(article => {
+                            des1.push(article.description);
+                        });
+        
+                        const articleDes = des1.map(description => {
+                            return description.length > 50
+                            ? `${description.slice(0, 50)}...`
+                            : description;
+                        });
+
                         db.query('SELECT * FROM Categorys', (error, categorys) => {
                             if (error) {
                                 throw error;
@@ -295,6 +306,7 @@ const viewArticle = (req, res) => {
                                 categorys: categorys,
                                 articles: articles,
                                 search: search,
+                                articleDes,articleDes,
                                 totalRecords: totalRecords,
                             });
                         });
